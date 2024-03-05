@@ -1,0 +1,17 @@
+{
+  "name": "SAC-Management",
+  "version": "1.0.0",
+  "description": "Your app description",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
+    "ejs-mate": "^4.0.0",
+    "express": "^4.18.3",
+    "mysql": "^2.18.1"
+  }
+}
