@@ -17,7 +17,7 @@ SAC_Managemengt is a project for managing Student Activity Center (SAC) activiti
 
 ## Setup Instructions
 
-1. Clone the repository: `git clone https://github.com/your-username/SAC_Managemengt.git`
+1. Clone the repository: `git clone https://github.com/Pallav46/SAC_Managemengt.git`
 2. Install dependencies: `npm install`
 3. Set up your MySQL database and update the connection details in `.env` file.
 4. Start the server: `npm start`
@@ -38,7 +38,3 @@ SAC_Managemengt is a project for managing Student Activity Center (SAC) activiti
 3. Make your changes and commit them: `git commit -m 'Add new feature'`
 4. Push to the branch: `git push origin feature-name`
 5. Submit a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
