@@ -2,6 +2,7 @@ const express = require("express");
 const ejs = require("ejs");
 const ejsMate = require("ejs-mate");
 const bodyParser = require("body-parser");
+const session = require("express-session");
 
 const {
   getAllStudents,
@@ -12,6 +13,8 @@ const {
   deleteStudent,
 } = require("./query/students");
 
+const { getAllRooms } = require("./query/rooms");
+
 const app = express();
 
 app.engine("ejs", ejsMate); // Set ejsMate as the view engine
@@ -20,6 +23,24 @@ app.set("view engine", "ejs"); // Set EJS as the view engine
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+// Set up session middleware
+app.use(
+  session({
+    secret: "secret", // Change this to a secure random string in production
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+// Authentication middleware
+function requireAuth(req, res, next) {
+  if (req.session.userId) {
+    // If user is authenticated
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -34,17 +55,13 @@ app.post("/login", async (req, res) => {
   try {
     const user = await getStudentByEmailPass(email, password);
     if (!user) {
-      return res
-        .status(401)
-        .send({ status: false, message: "Invalid Credentials" });
+      return res.render("user/login", { error: "Invalid Credentials" });
     }
-    console.log(user);
-    return res.status(200).send({ status: true, data: user });
+    req.session.userId = user.s_id; // Store user ID in session
+    res.redirect(`/user/${user.s_id}`);
   } catch (err) {
     console.error(err);
-    return res
-      .status(500)
-      .send({ status: false, message: "Internal Server Error" });
+    res.status(500).send("Internal Server Error");
   }
 });
 
@@ -53,31 +70,40 @@ app.get("/signUp", (req, res) => {
   res.render("user/signUp"); // Render the sign up template
 });
 
-// POST route for handling sign up form submission
 app.post("/signUp", async (req, res) => {
   const { name, roll, email, password } = req.body;
   try {
-    // Check if the user already exists (you may need to implement this logic)
     const existingUser = await getStudentByEmailPass(email, roll, password);
     if (existingUser) {
-      return res
-        .status(400)
-        .send({ status: false, message: "User already exists" });
+      return res.render("user/signUp", { error: "User already exists" });
     }
-    // If the user doesn't exist, create a new user
     const user = await createStudent({ name, roll, email, password });
-    return res
-      .status(201)
-      .send({ status: true, message: "User created successfully", user });
+    req.session.userId = user.s_id; // Store user ID in session
+    res.redirect(`/user/${user.s_id}`);
   } catch (err) {
     console.error(err);
-    return res
-      .status(500)
-      .send({ status: false, message: "Internal Server Error" });
+    res.status(500).send("Internal Server Error");
   }
 });
 
-const port = 3001;
+// User profile route (requires authentication)
+app.get("/user/:userId", requireAuth, async (req, res) => {
+  const userId = req.params.userId;
+  if (userId == req.session.userId) {
+    try {
+      const user = await getStudentById(req.session.userId);
+      const rooms = await getAllRooms(); // Assuming you have a function to fetch all rooms
+      res.render("user/index", { user, rooms });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Internal Server Error");
+    }
+  } else {
+    res.redirect("/login");
+  }
+});
+
+const port = process.env.DB_PORT;
 app.listen(port, () =>
   console.log(`Server is running on :- http://localhost:${port}`)
 );

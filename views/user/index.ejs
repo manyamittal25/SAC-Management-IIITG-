@@ -1,0 +1,33 @@
+<!-- views/user/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+</head>
+<body>
+    <h1>Welcome, <%= user.name %>!</h1>
+    <h2>Your Profile</h2>
+    <ul>
+        <li><strong>Name:</strong> <%= user.name %></li>
+        <li><strong>Roll:</strong> <%= user.roll %></li>
+        <li><strong>Email:</strong> <%= user.email %></li>
+    </ul>
+
+    <h2>Book Available Rooms</h2>
+    <div class="room-cards">
+        <% rooms.forEach(room => { %>
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title"><%= room.r_name %></h3>
+                    <form action="/bookRoom" method="post">
+                        <input type="hidden" name="r_id" value="<%= room.r_id %>">
+                        <button type="submit" class="btn btn-primary">Book Room</button>
+                    </form>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</body>
+</html>
