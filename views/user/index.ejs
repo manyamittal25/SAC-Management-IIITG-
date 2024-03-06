@@ -25,6 +25,7 @@
                         <input type="hidden" name="r_id" value="<%= room.r_id %>">
                         <button type="submit" class="btn btn-primary">Book Room</button>
                     </form>
+                    <a href='/user/<%= user.s_id %>/room/<%= room.r_id %>'>View Room</a>
                 </div>
             </div>
         <% }); %>

@@ -13,7 +13,9 @@ const {
   deleteStudent,
 } = require("./query/students");
 
-const { getAllRooms } = require("./query/rooms");
+const { getAllRooms,
+getRoomById
+ } = require("./query/rooms");
 
 const app = express();
 
@@ -94,6 +96,7 @@ app.get("/user/:userId", requireAuth, async (req, res) => {
       const user = await getStudentById(req.session.userId);
       const rooms = await getAllRooms(); // Assuming you have a function to fetch all rooms
       res.render("user/index", { user, rooms });
+      console.dir(user);
     } catch (err) {
       console.error(err);
       res.status(500).send("Internal Server Error");
@@ -102,6 +105,16 @@ app.get("/user/:userId", requireAuth, async (req, res) => {
     res.redirect("/login");
   }
 });
+
+app.get("/user/:userId/room/:roomId", requireAuth, async (req, res) => {
+  const roomId = req.params.roomId;
+  const room = await getRoomById(roomId);
+  const user = await getStudentById(req.params.userId);
+  if(room) {
+  
+    res.render("user/room_view", {user, room})
+  }
+})
 
 const port = process.env.DB_PORT;
 app.listen(port, () =>
