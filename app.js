@@ -122,7 +122,7 @@ app.get("/admin",(req,res)=>
 })
 app.post("/admin",(req,res)=>{
   const{admin_name,admin_password}=req.body;
-  if(admin_name!=="nanmo" && admin_password!=="abc")
+  if(admin_name==="nanmo" && admin_password==="abc")
   return  res.redirect("/admin/index");
    
 })
