@@ -3,6 +3,7 @@ const ejs = require("ejs");
 const ejsMate = require("ejs-mate");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const path = require("path");
 
 const {
   getAllStudents,
@@ -25,6 +26,7 @@ app.set("view engine", "ejs"); // Set EJS as the view engine
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "public"))); // Serve static files from the 'public' directory
 // Set up session middleware
 app.use(
   session({
@@ -69,7 +71,7 @@ app.post("/login", async (req, res) => {
 
 // GET route for rendering the sign up form
 app.get("/signUp", (req, res) => {
-  res.render("user/signUp"); // Render the sign up template
+  res.render("user/login"); // Render the sign up template
 });
 
 app.post("/signUp", async (req, res) => {
@@ -77,7 +79,7 @@ app.post("/signUp", async (req, res) => {
   try {
     const existingUser = await getStudentByEmailPass(email, roll, password);
     if (existingUser) {
-      return res.render("user/signUp", { error: "User already exists" });
+      return res.render("user/login", { error: "User already exists" });
     }
     const user = await createStudent({ name, roll, email, password });
     req.session.userId = user.s_id; // Store user ID in session
@@ -111,7 +113,6 @@ app.get("/user/:userId/room/:roomId", requireAuth, async (req, res) => {
   const room = await getRoomById(roomId);
   const user = await getStudentById(req.params.userId);
   if(room) {
-  
     res.render("user/room_view", {user, room})
   }
 })
