@@ -1,11 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Room name <%= room.r_name %> </h1>
+<%- include('./partials/header.ejs') %>
+
+<div class="app-content">
+    <%- include('./partials/sidebar.ejs') %>
+    <div class="projects-section">
+        <h1><%= room.r_name %> Details</h1>
+        <p>Room Name: <%= room.r_name %></p>
+
+        <!-- Buttons -->
+        <div class="buttons">
+            <a href="/user/<%= user.s_id %>" class="btn-back">Back</a>
+            <a  href="/room/<%= room.r_id %>/allot" class="btn-view-allotment">View Allotment</a>
+            <a href="/user/<%= user.s_id %>/room/<%= room.r_id %>/allot" class="btn-allot">Allot</a>
+        </div>
+    </div>
+</div>
+<!-- partial -->
+<script src="/user/javascript/index.js"></script>
+
 </body>
 </html>

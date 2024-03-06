@@ -78,11 +78,13 @@ function createDatabaseAndTables() {
       start_time DATETIME,
       end_time DATETIME,
       description VARCHAR(255),
+      status ENUM('pending', 'approved') DEFAULT 'pending', -- Adding the status field with default value 'pending'
       CONSTRAINT check_duration CHECK (TIMESTAMPDIFF(HOUR, start_time, end_time) <= 3),
       FOREIGN KEY (s_id) REFERENCES students(s_id),
       FOREIGN KEY (r_id) REFERENCES rooms(r_id)
     )
   `;
+
   executeQuery(
     createRoomAllotmentTableQuery,
     "Room allotment table created successfully",

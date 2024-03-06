@@ -1,22 +1,26 @@
-        <%- include('./partials/header.ejs') %>
+<%- include('./partials/header.ejs') %>
 
-        <div class="app-content">
-            <%- include('./partials/sidebar.ejs') %>
-            
+    <div class="app-content">
+        <%- include('./partials/sidebar.ejs') %>
+
             <div class="projects-section">
                 <div class="projects-section-header">
                     <p>Rooms</p>
-                    <p class="time">December, 12</p>
+                    <p class="time">
+                        <%=  new Date().toLocaleString("default", { month: "long" }) + ', ' +new Date().getDate() %>
+                    </p>
                 </div>
 
                 <div class="projects-section-line">
                     <div class="projects-status">
                         <div class="item-status">
-                            <span class="status-number">5</span>
+                            <span class="status-number">
+                                <%= rooms.length%>
+                            </span>
                             <span class="status-type">Total rooms</span>
                         </div>
                         <div class="item-status">
-                            <span class="status-number">2</span>
+                            <span class="status-number">0</span>
                             <span class="status-type">Rooms alloted to u</span>
                         </div>
 
@@ -48,11 +52,11 @@
                 </div>
 
                 <div class="project-boxes jsGridView">
-                    <% rooms.forEach(room=> { %>
+                    <% rooms.forEach( (room, index) => { %>
                         <div class="project-box-wrapper">
-                            <div class="project-box" style="background-color: #fee4cb;">
+                            <div class="project-box" style="background-color: <%= index % 2 === 0 ? '#fee4cb' : '#d5deff' %>">
                                 <div class="project-box-header">
-                                    <span>December 10, 2020</span>
+                                    <span><%=  new Date().toLocaleString("default", { month: "long" }) + ' ' +new Date().getDate() + ', ' + new Date().getFullYear() %></span>
                                     <div class="more-wrapper">
                                         <button class="project-btn-more">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -64,42 +68,47 @@
                                                 <circle cx="12" cy="19" r="1" />
                                             </svg>
                                         </button>
+                                        
                                     </div>
                                 </div>
                                 <div class="project-box-content-header">
-                                    <p class="box-content-header"><%= room.r_name %></p>
+                                    <p class="box-content-header">
+                                        <%= room.r_name %>
+                                    </p>
                                     <p class="box-content-subheader">Prototyping</p>
                                 </div>
                                 <div class="box-progress-wrapper">
                                     <p class="box-progress-header">Booking</p>
                                     <div class="box-progress-bar">
-                                        <span class="box-progress" style="width: 60%; background-color: #ff942e"></span>
+                                        <span class="box-progress" style="width: 60%; background-color: <%= index % 2 === 0 ? '#ff942e' : '#4067f9' %>"></span>
+
                                     </div>
                                     <p class="box-progress-percentage">60%</p>
                                 </div>
                                 <div class="project-box-footer">
                                     <div class="participants">
                                         Allot room
-                                        <a class="add-participant" href="#" style="color: #ff942e;">
+                                        <a class="add-participant" href="/user/<%= user.s_id %>/room/<%= room.r_id %>/allot" style="color: <%= index % 2 === 0 ? '#ff942e' : '#4067f9' %>">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-plus">
                                                 <path d="M12 5v14M5 12h14" />
                                             </svg>
                                         </a>
                                     </div>
-                                    <a class="days-left" style="color: #ff942e;">
+                                    <a href="/user/<%= user.s_id %>/room/<%= room.r_id %>" class="days-left"
+                                        style="color: <%= index % 2 === 0 ? '#ff942e' : '#4067f9' %>">
                                         View room
                                     </a>
                                 </div>
                             </div>
                         </div>
-                    <% }); %>
+                        <% }); %>
                 </div>
             </div>
             <!-- partial -->
-    <script src="/user/javascript/index.js"></script>
+            <script src="/user/javascript/index.js"></script>
+            </body>
 
-</body>
-
-</html>
+            </html>
