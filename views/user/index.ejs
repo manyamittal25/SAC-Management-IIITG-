@@ -1,34 +1,105 @@
-<!-- views/user/index.ejs -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-</head>
-<body>
-    <h1>Welcome, <%= user.name %>!</h1>
-    <h2>Your Profile</h2>
-    <ul>
-        <li><strong>Name:</strong> <%= user.name %></li>
-        <li><strong>Roll:</strong> <%= user.roll %></li>
-        <li><strong>Email:</strong> <%= user.email %></li>
-    </ul>
+        <%- include('./partials/header.ejs') %>
 
-    <h2>Book Available Rooms</h2>
-    <div class="room-cards">
-        <% rooms.forEach(room => { %>
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="card-title"><%= room.r_name %></h3>
-                    <form action="/bookRoom" method="post">
-                        <input type="hidden" name="r_id" value="<%= room.r_id %>">
-                        <button type="submit" class="btn btn-primary">Book Room</button>
-                    </form>
-                    <a href='/user/<%= user.s_id %>/room/<%= room.r_id %>'>View Room</a>
+        <div class="app-content">
+            <%- include('./partials/sidebar.ejs') %>
+            
+            <div class="projects-section">
+                <div class="projects-section-header">
+                    <p>Rooms</p>
+                    <p class="time">December, 12</p>
+                </div>
+
+                <div class="projects-section-line">
+                    <div class="projects-status">
+                        <div class="item-status">
+                            <span class="status-number">5</span>
+                            <span class="status-type">Total rooms</span>
+                        </div>
+                        <div class="item-status">
+                            <span class="status-number">2</span>
+                            <span class="status-type">Rooms alloted to u</span>
+                        </div>
+
+                    </div>
+                    <div class="view-actions">
+                        <button class="view-btn list-view" title="List View">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-list">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>
+                        </button>
+                        <button class="view-btn grid-view active" title="Grid View">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-grid">
+                                <rect x="3" y="3" width="7" height="7" />
+                                <rect x="14" y="3" width="7" height="7" />
+                                <rect x="14" y="14" width="7" height="7" />
+                                <rect x="3" y="14" width="7" height="7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="project-boxes jsGridView">
+                    <% rooms.forEach(room=> { %>
+                        <div class="project-box-wrapper">
+                            <div class="project-box" style="background-color: #fee4cb;">
+                                <div class="project-box-header">
+                                    <span>December 10, 2020</span>
+                                    <div class="more-wrapper">
+                                        <button class="project-btn-more">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-more-vertical">
+                                                <circle cx="12" cy="12" r="1" />
+                                                <circle cx="12" cy="5" r="1" />
+                                                <circle cx="12" cy="19" r="1" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="project-box-content-header">
+                                    <p class="box-content-header"><%= room.r_name %></p>
+                                    <p class="box-content-subheader">Prototyping</p>
+                                </div>
+                                <div class="box-progress-wrapper">
+                                    <p class="box-progress-header">Booking</p>
+                                    <div class="box-progress-bar">
+                                        <span class="box-progress" style="width: 60%; background-color: #ff942e"></span>
+                                    </div>
+                                    <p class="box-progress-percentage">60%</p>
+                                </div>
+                                <div class="project-box-footer">
+                                    <div class="participants">
+                                        Allot room
+                                        <a class="add-participant" href="#" style="color: #ff942e;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                                                <path d="M12 5v14M5 12h14" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <a class="days-left" style="color: #ff942e;">
+                                        View room
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
                 </div>
             </div>
-        <% }); %>
-    </div>
+            <!-- partial -->
+    <script src="/user/javascript/index.js"></script>
+
 </body>
+
 </html>
