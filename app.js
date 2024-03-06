@@ -14,9 +14,7 @@ const {
   deleteStudent,
 } = require("./query/students");
 
-const { getAllRooms,
-getRoomById
- } = require("./query/rooms");
+const { getAllRooms, getRoomById } = require("./query/rooms");
 
 const app = express();
 
@@ -112,26 +110,28 @@ app.get("/user/:userId/room/:roomId", requireAuth, async (req, res) => {
   const roomId = req.params.roomId;
   const room = await getRoomById(roomId);
   const user = await getStudentById(req.params.userId);
-  if(room) {
-    res.render("user/room_view", {user, room})
+  if (room) {
+    res.render("user/room_view", { user, room });
   }
-})
-app.get("/admin",(req,res)=>
-{
-  res.render("admin_panel/admin_get");
-})
-app.post("/admin",(req,res)=>{
-  const{admin_name,admin_password}=req.body;
-  if(admin_name==="nanmo" && admin_password==="abc")
-  return  res.redirect("/admin/index");
-   
-})
+});
 
-app.get("/admin/index",async (req,res)=>{
-  const rooms = await getAllRooms(); 
-  console.log(rooms)
-  res.render("admin_panel/index",{rooms});
-})
+app.get("/admin", (req, res) => {
+  res.render("admin/login");
+});
+
+app.post("/admin", (req, res) => {
+  const { admin_name, admin_password } = req.body;
+  if (admin_name === "nanmo" && admin_password === "abc") {
+    return res.redirect("/admin/index");
+  } else {
+    return  res.send("Incorrect username or password.");
+  }
+});
+
+app.get("/admin/index", async (req, res) => {
+  const rooms = await getAllRooms();
+  res.render("admin/index", { rooms });
+});
 
 const port = process.env.DB_PORT;
 app.listen(port, () =>
