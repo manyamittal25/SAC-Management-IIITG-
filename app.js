@@ -116,6 +116,22 @@ app.get("/user/:userId/room/:roomId", requireAuth, async (req, res) => {
     res.render("user/room_view", {user, room})
   }
 })
+app.get("/admin",(req,res)=>
+{
+  res.render("admin_panel/admin_get");
+})
+app.post("/admin",(req,res)=>{
+  const{admin_name,admin_password}=req.body;
+  if(admin_name==="nanmo" && admin_password==="abc")
+  return  res.redirect("/admin/index");
+   
+})
+
+app.get("/admin/index",async (req,res)=>{
+  const rooms = await getAllRooms(); 
+  console.log(rooms)
+  res.render("admin_panel/index",{rooms});
+})
 
 const port = process.env.DB_PORT;
 app.listen(port, () =>
