@@ -4,14 +4,35 @@
     <%- include('./partials/sidebar.ejs') %>
     <div class="projects-section">
         <h1><%= room.r_name %> Details</h1>
-        <p>Room Name: <%= room.r_name %></p>
-
-        <!-- Buttons -->
-        <div class="buttons">
-            <a href="/user/<%= user.s_id %>" class="btn-back">Back</a>
-            <a  href="/room/<%= room.r_id %>/allot" class="btn-view-allotment">View Allotment</a>
-            <a href="/user/<%= user.s_id %>/room/<%= room.r_id %>/allot" class="btn-allot">Allot</a>
-        </div>
+        
+        <% if (room_allotments.length > 0) { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Room Name</th>
+                    <th>Day</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% room_allotments.forEach((allotment) => { %>
+                <tr>
+                    <td><%= allotment.name %></td>
+                    <td><%= allotment.r_name %></td>
+                    <td><%= new Date(allotment.start_time).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></td>
+                    <td><%= new Date(allotment.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) %></td>
+                    <td><%= new Date(allotment.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) %></td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <% } else { %>
+        <p>No room allotments found.</p>
+        <% } %>
+         <!-- Back button -->
+         <a href="/user/<%= user.s_id %>" class="back-button">Back to Dashboard</a>
     </div>
 </div>
 <!-- partial -->
@@ -19,3 +40,7 @@
 
 </body>
 </html>
+
+<script>
+ 
+</script>

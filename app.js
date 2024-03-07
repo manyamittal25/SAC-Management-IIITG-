@@ -17,6 +17,13 @@ const {
 
 const { getAllRooms, getRoomById } = require("./query/rooms");
 
+const {
+  getAllAllotedRooms,
+  getAllotedRoomsByRoomId,
+  getOverlappingInterval,
+  createRoomAllotment,
+} = require("./query/room_allot");
+
 const app = express();
 
 app.engine("ejs", ejsMate); // Set ejsMate as the view engine
@@ -108,57 +115,95 @@ app.get("/user/:userId", requireAuth, async (req, res) => {
 });
 
 app.get("/user/:userId/room/:roomId", requireAuth, async (req, res) => {
-  const roomId = req.params.roomId;
-  const room = await getRoomById(roomId);
-  const user = await getStudentById(req.params.userId);
-  if (room) {
-    res.render("user/room_view", { user, room });
+  try {
+    const roomId = req.params.roomId;
+    const room = await getRoomById(roomId);
+    const user = await getStudentById(req.params.userId);
+    const room_allotments = await getAllotedRoomsByRoomId(req.params.roomId);
+    
+    if (room_allotments) {
+      res.render("user/room_view", { user, room, room_allotments }); 
+    } else {
+      res.send("no allotment")
+    }
+  } catch (error) {
+    console.error("Error rendering room view:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
-// // Middleware to validate the start time and end time
-// const validateRoomAllotment = (req, res, next) => {
-//   const { start_time, end_time } = req.body;
 
-//   // Convert start_time and end_time to Date objects
-//   const startTime = moment(start_time);
-//   const endTime = moment(end_time);
+// Middleware to validate the start time and end time
+const validateRoomAllotment = (req, res, next) => {
+  const { start_time, end_time } = req.body;
 
-//   // Check if start_time and end_time are valid
-//   if (!startTime.isValid() || !endTime.isValid()) {
-//     return res.status(400).send("Invalid start time or end time.");
-//   }
+  // Convert start_time and end_time to Date objects
+  const startTime = moment(start_time);
+  const endTime = moment(end_time);
 
-//   // Check if start_time is within the next 24 hours
-//   if (!startTime.isBetween(moment(), moment().add(24, "hours"))) {
-//     return res
-//       .status(400)
-//       .send("Start time should be within the next 24 hours.");
-//   }
+  // Check if start_time and end_time are valid
+  if (!startTime.isValid() || !endTime.isValid()) {
+    return res.status(400).send("Invalid start time or end time.");
+  }
 
-//   // Calculate duration in hours
-//   const duration = moment.duration(endTime.diff(startTime)).asHours();
+  // Check if start_time is within the next 24 hours
+  if (!startTime.isBetween(moment(), moment().add(24, "hours"))) {
+    return res
+      .status(400)
+      .send("Start time should be within the next 24 hours.");
+  }
 
-//   // Check if duration is less than or equal to 3 hours
-//   if (duration > 3) {
-//     return res
-//       .status(400)
-//       .send("Duration should be less than or equal to 3 hours.");
-//   }
+  // Calculate duration in hours
+  const duration = moment.duration(endTime.diff(startTime)).asHours();
 
-//   // Proceed to the next middleware if validation passes
-//   next();
-// };
+  // Check if duration is less than or equal to 3 hours
+  if (duration > 3) {
+    return res
+      .status(400)
+      .send("Duration should be less than or equal to 3 hours.");
+  }
 
-// // Route handler for POST request
-// app.post(
-//   "/user/:userId/room/:roomId/allot",
-//   requireAuth,
-//   validateRoomAllotment,
-//   async (req, res) => {
-//     // Your logic to handle room allotment
-//   }
-// );
+  // Proceed to the next middleware if validation passes
+  next();
+};
+
+// Route handler for POST request
+app.post(
+  "/user/:userId/room/:roomId/allot",
+  requireAuth,
+  validateRoomAllotment,
+  async (req, res) => {
+    try {
+      const { start_time, end_time, description } = req.body;
+
+      // Check for overlapping intervals
+      const countOverlapping = await getOverlappingInterval(
+        start_time,
+        end_time,
+        req.params.roomId
+      );
+      console.dir(countOverlapping);
+      // If there are no overlapping intervals, create the room allotment
+      if (countOverlapping[0].overlapCount == 0) {
+        await createRoomAllotment(
+          req.params.userId,
+          req.params.roomId,
+          start_time,
+          end_time,
+          description
+        );
+        res.redirect(`user/${req.params.userId}`);
+      } else {
+        res
+          .status(409)
+          .json({ error: "Room allotment overlaps with existing bookings" });
+      }
+    } catch (error) {
+      console.error("Error creating room allotment:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
 
 app.get("/user/:userId/room/:roomId/allot", requireAuth, async (req, res) => {
   const roomId = req.params.roomId;
@@ -187,8 +232,9 @@ app.get("/admin/dashboard", async (req, res) => {
   res.render("admin/index", { rooms });
 });
 
-app.get("/room/:id/allot", async (req, res) => {
-  res.send("hii");
+app.get("/room/:roomId/allot", async (req, res) => {
+  const room_allotment = await getAllotedRoomsByRoomId(req.params.roomId);
+  res.send(room_allotment)
 });
 
 const port = process.env.DB_PORT;

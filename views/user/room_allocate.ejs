@@ -3,28 +3,47 @@
 <div class="app-content">
     <%- include('./partials/sidebar.ejs') %>
     <div class="projects-section">
-        <h1><%= room.r_name %> Allotment</h1>
-
-       
-
-        <!-- Room Allotment Form -->
-        <form action="/submit_room_allotment" method="POST" class="room-allotment-form">
-            <div class="form-group">
-                <label for="start_date">From:</label>
-                <input type="datetime-local" id="start_date" name="start_date" required>
+        <section class=" room-allot-section">
+            <div class="room-allot-box">
+              
+              <div class="room-allot-square" style="--i:0;"></div>
+              <div class="room-allot-square" style="--i:1;"></div>
+              <div class="room-allot-square" style="--i:2;"></div>
+              <div class="room-allot-square" style="--i:3;"></div>
+              <div class="room-allot-square" style="--i:4;"></div>
+              <div class="room-allot-square" style="--i:5;"></div>
+              
+             <div class="room-allot-container"> 
+              <div class="room-allot-form"> 
+                <h2>Allot <%=room.r_name%></h2>
+                <form action="/user/<%= user.s_id%>/room/<%=room.r_id%>/allot" method="post">
+                  <div class="inputBx">
+                    <input type="datetime-local" id="start-time" name="start_time" required="required" >
+                    <span for="start-time">Start time</span>
+                    <i class="fas fa-clock"></i>
+                  </div>
+          
+                  <div class="inputBx">
+                    <input type="datetime-local" id="end-time" name="end_time" required="required" >
+                    <span for="end-time">End time</span>
+                    <i class="fas fa-clock"></i>
+                  </div>
+          
+                  <div class="inputBx">
+                    <input type="text" id="description" name="description" required="required" >
+                    <span for="end-time">Description</span>
+                    <i class="fas fa-key"></i>
+                  </div>
+          
+                  <div class="inputBx">
+                    <input type="submit" value="Allot"> 
+                  </div>
+                </form>
+                <p><a href="/user/<%= user.s_id %>">Back</a></p>
+              </div>
             </div>
-            <div class="form-group">
-                <label for="end_date">To:</label>
-                <input type="datetime-local" id="end_date" name="end_date" required>
-            </div>
-            <div class="form-group">
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
-            </div>
-            <button type="submit" class="btn-submit">Submit</button>
-             <!-- Back Button -->
-            <a href="/user/<%= user.s_id %>" class="back-button">Back</a>
-        </form>
+              
+        </section>
     </div>
 </div>
 <!-- partial -->
