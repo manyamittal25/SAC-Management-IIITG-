@@ -20,6 +20,7 @@ const { getAllRooms, getRoomById } = require("./query/rooms");
 const {
   getAllAllotedRooms,
   getAllotedRoomsByRoomId,
+  getAllotedRoomsByUserId,
   getOverlappingInterval,
   createRoomAllotment,
 } = require("./query/room_allot");
@@ -99,11 +100,13 @@ app.post("/signUp", async (req, res) => {
 // User profile route (requires authentication)
 app.get("/user/:userId", requireAuth, async (req, res) => {
   const userId = req.params.userId;
+  const currentPage = 'home'
   if (userId == req.session.userId) {
     try {
       const user = await getStudentById(req.session.userId);
       const rooms = await getAllRooms(); // Assuming you have a function to fetch all rooms
-      res.render("user/index", { user, rooms });
+      const booking = await getAllotedRoomsByUserId(userId);
+      res.render("user/index", { user, rooms, currentPage, booking });
       console.dir(user);
     } catch (err) {
       console.error(err);
@@ -120,18 +123,17 @@ app.get("/user/:userId/room/:roomId", requireAuth, async (req, res) => {
     const room = await getRoomById(roomId);
     const user = await getStudentById(req.params.userId);
     const room_allotments = await getAllotedRoomsByRoomId(req.params.roomId);
-    
+    const currentPage = 'home'
     if (room_allotments) {
-      res.render("user/room_view", { user, room, room_allotments }); 
+      res.render("user/room_view", { user, room, room_allotments, currentPage });
     } else {
-      res.send("no allotment")
+      res.send("no allotment");
     }
   } catch (error) {
     console.error("Error rendering room view:", error);
     res.status(500).send("Internal Server Error");
   }
 });
-
 
 // Middleware to validate the start time and end time
 const validateRoomAllotment = (req, res, next) => {
@@ -146,11 +148,11 @@ const validateRoomAllotment = (req, res, next) => {
     return res.status(400).send("Invalid start time or end time.");
   }
 
-  // Check if start_time is within the next 24 hours
-  if (!startTime.isBetween(moment(), moment().add(24, "hours"))) {
+  // Check if start_time is within the next 7 days
+  if (!startTime.isBetween(moment(), moment().add(7 * 24, "hours"))) {
     return res
       .status(400)
-      .send("Start time should be within the next 24 hours.");
+      .send("Start time should be within the next 7 days.");
   }
 
   // Calculate duration in hours
@@ -167,6 +169,16 @@ const validateRoomAllotment = (req, res, next) => {
   next();
 };
 
+app.get("/user/:userId/room/:roomId/allot", requireAuth, async (req, res) => {
+  const roomId = req.params.roomId;
+  const room = await getRoomById(roomId);
+  const user = await getStudentById(req.params.userId);
+  const currentPage = 'home'
+
+  if (room) {
+    res.render("user/room_allocate", { user, room, currentPage });
+  }
+});
 // Route handler for POST request
 app.post(
   "/user/:userId/room/:roomId/allot",
@@ -192,7 +204,7 @@ app.post(
           end_time,
           description
         );
-        res.redirect(`user/${req.params.userId}`);
+        res.redirect(`/user/${req.params.userId}/room/${req.params.roomId}`);
       } else {
         res
           .status(409)
@@ -205,14 +217,23 @@ app.post(
   }
 );
 
-app.get("/user/:userId/room/:roomId/allot", requireAuth, async (req, res) => {
-  const roomId = req.params.roomId;
-  const room = await getRoomById(roomId);
-  const user = await getStudentById(req.params.userId);
-  if (room) {
-    res.render("user/room_allocate", { user, room });
+
+
+app.get("/user/:userId/history", async (req, res) => {
+  try {
+    const user = await getStudentById(req.params.userId);
+    const room_allotments = await getAllotedRoomsByUserId(req.params.userId);
+    const currentPage = 'history'
+    if (room_allotments) {
+      res.render("user/room_history", { user, room_allotments, currentPage });
+    } else {
+      res.send("no allotment");
+    }
+  } catch (error) {
+    console.error("Error rendering history view:", error);
+    res.status(500).send("Internal Server Error");
   }
-});
+})
 
 app.get("/admin", (req, res) => {
   res.render("admin/login");
@@ -234,8 +255,10 @@ app.get("/admin/dashboard", async (req, res) => {
 
 app.get("/room/:roomId/allot", async (req, res) => {
   const room_allotment = await getAllotedRoomsByRoomId(req.params.roomId);
-  res.send(room_allotment)
+  res.send(room_allotment);
 });
+
+
 
 const port = process.env.DB_PORT;
 app.listen(port, () =>

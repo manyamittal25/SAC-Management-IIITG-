@@ -17,19 +17,34 @@ async function getAllAllotedRooms() {
 // Function to get alloted rooms by room ID
 async function getAllotedRoomsByRoomId(roomId) {
   return new Promise((resolve, reject) => {
-    const selectQuery = ` SELECT name, r_name, start_time, end_time 
+    const selectQuery = ` SELECT name, r_name, start_time, end_time, status 
             FROM room_allotment NATURAL JOIN rooms NATURAL JOIN students 
             WHERE r_id = ? AND status = 'approved'
             `;
     pool.query(selectQuery, [roomId], (err, results) => {
       if (err) {
-        console.error("Error fetching room_allot: " + err.stack);
+        console.error("Error fetching room_allotbyRoomId: " + err.stack);
         return reject(err);
       }
-      if (results.length === 0) {
-        console.error("room_allot not found");
-        return reject(new Error("room_allot not found"));
+      
+      resolve(results);
+    });
+  });
+}
+
+// Function to get alloted rooms by room ID
+async function getAllotedRoomsByUserId(userId) {
+  return new Promise((resolve, reject) => {
+    const selectQuery = ` SELECT name, r_name, start_time, end_time, status 
+            FROM room_allotment NATURAL JOIN rooms NATURAL JOIN students 
+            WHERE s_id = ? AND status = 'approved'
+            `;
+    pool.query(selectQuery, [userId], (err, results) => {
+      if (err) {
+        console.error("Error fetching room_allotbyUserId: " + err.stack);
+        return reject(err);
       }
+      
       resolve(results);
     });
   });
@@ -85,6 +100,7 @@ async function createRoomAllotment(
 module.exports = {
   getAllAllotedRooms,
   getAllotedRoomsByRoomId,
+  getAllotedRoomsByUserId,
   getOverlappingInterval,
   createRoomAllotment,
 };
