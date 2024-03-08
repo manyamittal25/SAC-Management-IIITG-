@@ -15,7 +15,7 @@ const {
   deleteStudent,
 } = require("./query/students");
 
-const { getAllRooms, getRoomById } = require("./query/rooms");
+const { getAllRooms, getRoomById, createRoom } = require("./query/rooms");
 
 const {
   getAllAllotedRooms,
@@ -52,6 +52,48 @@ function requireAuth(req, res, next) {
     res.redirect("/login");
   }
 }
+
+// Authentication middleware
+function requireAuthAdmin(req, res, next) {
+  if (req.session.adminId) {
+    // If user is authenticated
+    next();
+  } else {
+    res.redirect("/admin");
+  }
+}
+
+// Middleware to validate the start time and end time
+const validateRoomAllotment = (req, res, next) => {
+  const { start_time, end_time } = req.body;
+
+  // Convert start_time and end_time to Date objects
+  const startTime = moment(start_time);
+  const endTime = moment(end_time);
+
+  // Check if start_time and end_time are valid
+  if (!startTime.isValid() || !endTime.isValid()) {
+    return res.status(400).send("Invalid start time or end time.");
+  }
+
+  // Check if start_time is within the next 7 days
+  if (!startTime.isBetween(moment(), moment().add(7 * 24, "hours"))) {
+    return res.status(400).send("Start time should be within the next 7 days.");
+  }
+
+  // Calculate duration in hours
+  const duration = moment.duration(endTime.diff(startTime)).asHours();
+
+  // Check if duration is less than or equal to 3 hours
+  if (duration > 3) {
+    return res
+      .status(400)
+      .send("Duration should be less than or equal to 3 hours.");
+  }
+
+  // Proceed to the next middleware if validation passes
+  next();
+};
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -100,7 +142,7 @@ app.post("/signUp", async (req, res) => {
 // User profile route (requires authentication)
 app.get("/user/:userId", requireAuth, async (req, res) => {
   const userId = req.params.userId;
-  const currentPage = 'home'
+  const currentPage = "home";
   if (userId == req.session.userId) {
     try {
       const user = await getStudentById(req.session.userId);
@@ -123,9 +165,14 @@ app.get("/user/:userId/room/:roomId", requireAuth, async (req, res) => {
     const room = await getRoomById(roomId);
     const user = await getStudentById(req.params.userId);
     const room_allotments = await getAllotedRoomsByRoomId(req.params.roomId);
-    const currentPage = 'home'
+    const currentPage = "home";
     if (room_allotments) {
-      res.render("user/room_view", { user, room, room_allotments, currentPage });
+      res.render("user/room_view", {
+        user,
+        room,
+        room_allotments,
+        currentPage,
+      });
     } else {
       res.send("no allotment");
     }
@@ -135,45 +182,11 @@ app.get("/user/:userId/room/:roomId", requireAuth, async (req, res) => {
   }
 });
 
-// Middleware to validate the start time and end time
-const validateRoomAllotment = (req, res, next) => {
-  const { start_time, end_time } = req.body;
-
-  // Convert start_time and end_time to Date objects
-  const startTime = moment(start_time);
-  const endTime = moment(end_time);
-
-  // Check if start_time and end_time are valid
-  if (!startTime.isValid() || !endTime.isValid()) {
-    return res.status(400).send("Invalid start time or end time.");
-  }
-
-  // Check if start_time is within the next 7 days
-  if (!startTime.isBetween(moment(), moment().add(7 * 24, "hours"))) {
-    return res
-      .status(400)
-      .send("Start time should be within the next 7 days.");
-  }
-
-  // Calculate duration in hours
-  const duration = moment.duration(endTime.diff(startTime)).asHours();
-
-  // Check if duration is less than or equal to 3 hours
-  if (duration > 3) {
-    return res
-      .status(400)
-      .send("Duration should be less than or equal to 3 hours.");
-  }
-
-  // Proceed to the next middleware if validation passes
-  next();
-};
-
 app.get("/user/:userId/room/:roomId/allot", requireAuth, async (req, res) => {
   const roomId = req.params.roomId;
   const room = await getRoomById(roomId);
   const user = await getStudentById(req.params.userId);
-  const currentPage = 'home'
+  const currentPage = "home";
 
   if (room) {
     res.render("user/room_allocate", { user, room, currentPage });
@@ -217,13 +230,11 @@ app.post(
   }
 );
 
-
-
 app.get("/user/:userId/history", async (req, res) => {
   try {
     const user = await getStudentById(req.params.userId);
     const room_allotments = await getAllotedRoomsByUserId(req.params.userId);
-    const currentPage = 'history'
+    const currentPage = "history";
     if (room_allotments) {
       res.render("user/room_history", { user, room_allotments, currentPage });
     } else {
@@ -233,7 +244,7 @@ app.get("/user/:userId/history", async (req, res) => {
     console.error("Error rendering history view:", error);
     res.status(500).send("Internal Server Error");
   }
-})
+});
 
 app.get("/admin", (req, res) => {
   res.render("admin/login");
@@ -242,23 +253,46 @@ app.get("/admin", (req, res) => {
 app.post("/admin", (req, res) => {
   const { admin_name, admin_password } = req.body;
   if (admin_name === "nanmo" && admin_password === "abc") {
+    req.session.adminId = 1;
     return res.redirect("/admin/dashboard");
   } else {
     return res.send("Incorrect username or password.");
   }
 });
 
-app.get("/admin/dashboard", async (req, res) => {
-  const rooms = await getAllRooms();
-  res.render("admin/index", { rooms });
+app.get("/admin/dashboard", requireAuthAdmin, async (req, res) => {
+  if(req.session.adminId == 1) {
+    const rooms = await getAllRooms();
+    res.render("admin/index", { rooms });
+  } else {
+    res.redirect('/admin');
+  }
 });
+
+app.get("/admin/dashboard/addRoom", requireAuthAdmin, async (req, res) => {
+  res.render("admin/addRoom");
+})
+
+app.post("/admin/dashboard/addRoom", async (req, res) => {
+  try {
+    // Extracting data from the request body
+    const { r_name } = req.body;
+    const newRoom = await createRoom({r_name});
+
+    
+    res.redirect("/admin/dashboard")
+  } catch (error) {
+    // Handle any errors that occur during the process
+    console.error("Error adding room:", error);
+    res.status(500).json({ message: "Error adding room", error: error.message });
+  }
+});
+
 
 app.get("/room/:roomId/allot", async (req, res) => {
   const room_allotment = await getAllotedRoomsByRoomId(req.params.roomId);
   res.send(room_allotment);
 });
-
-
 
 const port = process.env.DB_PORT;
 app.listen(port, () =>

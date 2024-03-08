@@ -31,7 +31,32 @@ async function getRoomById(roomId) {
   });
 }
 
+// Function to create a room
+async function createRoom(roomData) {
+  return new Promise((resolve, reject) => {
+    const { r_name } = roomData;
+    console.log("Room data", roomData);
+    const insertQuery = `INSERT INTO rooms (r_name) VALUES (?)`;
+    pool.query(insertQuery, [r_name], (err, results) => {
+      if (err) {
+        console.error("Error creating room: " + err.stack);
+        return reject(err);
+      }
+      console.log("room created successfully");
+      const roomId = results.insertId; // Get the ID of the newly created room
+      getRoomById(roomId)
+        .then((room) => {
+          resolve(room); 
+        })
+        .catch((err) => {
+          reject(err); 
+        });
+    });
+  });
+}
+
 module.exports = {
   getAllRooms,
-  getRoomById
+  getRoomById,
+  createRoom
 };
