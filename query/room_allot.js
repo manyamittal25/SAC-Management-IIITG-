@@ -130,6 +130,24 @@ async function approveRoomAllotment(allotmentId) {
   });
 }
 
+// Function to get alloted rooms by room ID
+async function getHisAllotedRoomsByUserId(userId) {
+  return new Promise((resolve, reject) => {
+    const selectQuery = ` SELECT name, r_name, start_time, end_time, status 
+            FROM room_allotment NATURAL JOIN rooms NATURAL JOIN students 
+            WHERE s_id = ?
+            `;
+    pool.query(selectQuery, [userId], (err, results) => {
+      if (err) {
+        console.error("Error fetching room_allotbyUserId: " + err.stack);
+        return reject(err);
+      }
+
+      resolve(results);
+    });
+  });
+}
+
 module.exports = {
   getAllAllotedRooms,
   getAllotedRoomsByRoomId,
@@ -138,5 +156,6 @@ module.exports = {
   getOverlappingInterval,
   createRoomAllotment,
   approveRoomAllotment, 
+  getHisAllotedRoomsByUserId,
 };
 

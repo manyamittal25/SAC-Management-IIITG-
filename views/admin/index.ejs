@@ -16,13 +16,18 @@
           <th>View Room</th>
         </thead>
         <tbody>
-          <% rooms.forEach((i)=>{%>
+          <% rooms.forEach((room) => { %>
           <tr>
-            <td><%=i.r_id%></td>
-            <td><%=i.r_name%></td>
-            <td><a href="/admin/dashboard/view/<%= i.r_id %>">View</a></td>
+            <td><%= room.r_id %></td>
+            <td><%= room.r_name %></td>
+            <td><a href="/admin/dashboard/view/<%= room.r_id %>">View</a></td>
+            <td>
+              <form action="/admin/dashboard/delete/<%= room.r_id %>" method="POST">
+                <button type="submit">Delete</button>
+              </form>
+            </td>
           </tr>
-          <% });%>
+          <% }); %>
         </tbody>
       </table>
       <a href="/admin/dashboard/addRoom" >Add more</a>

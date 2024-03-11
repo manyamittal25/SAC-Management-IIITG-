@@ -46,11 +46,25 @@ async function createRoom(roomData) {
       const roomId = results.insertId; // Get the ID of the newly created room
       getRoomById(roomId)
         .then((room) => {
-          resolve(room); 
+          resolve(room);
         })
         .catch((err) => {
-          reject(err); 
+          reject(err);
         });
+    });
+  });
+}
+
+async function deleteRoom(roomId) {
+  return new Promise((resolve, reject) => {
+    const deleteQuery = `DELETE FROM rooms WHERE r_id = ?`;
+    pool.query(deleteQuery, [roomId], (err, results) => {
+      if (err) {
+        console.error("Error deleting room: " + err.stack);
+        return reject(err);
+      }
+      console.log("Room deleted successfully");
+      resolve(results.affectedRows > 0); // Resolve with a boolean indicating whether a room was deleted
     });
   });
 }
@@ -58,5 +72,6 @@ async function createRoom(roomData) {
 module.exports = {
   getAllRooms,
   getRoomById,
-  createRoom
+  createRoom,
+  deleteRoom,
 };

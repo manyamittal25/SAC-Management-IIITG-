@@ -15,7 +15,7 @@ const {
   deleteStudent,
 } = require("./query/students");
 
-const { getAllRooms, getRoomById, createRoom } = require("./query/rooms");
+const { getAllRooms, getRoomById, createRoom, deleteRoom } = require("./query/rooms");
 
 const {
   getAllAllotedRooms,
@@ -25,6 +25,7 @@ const {
   getOverlappingInterval,
   createRoomAllotment,
   approveRoomAllotment,
+  getHisAllotedRoomsByUserId
 } = require("./query/room_allot");
 
 const app = express();
@@ -209,7 +210,7 @@ app.post(
         end_time,
         req.params.roomId
       );
-      console.dir(countOverlapping);
+      console.log(start_time);
       // If there are no overlapping intervals, create the room allotment
       if (countOverlapping[0].overlapCount == 0) {
         await createRoomAllotment(
@@ -219,7 +220,7 @@ app.post(
           end_time,
           description
         );
-        res.redirect(`/user/${req.params.userId}/room/${req.params.roomId}`);
+        res.redirect(`/user/${req.params.userId}`);
       } else {
         res
           .status(409)
@@ -235,7 +236,7 @@ app.post(
 app.get("/user/:userId/history", async (req, res) => {
   try {
     const user = await getStudentById(req.params.userId);
-    const room_allotments = await getAllotedRoomsByUserId(req.params.userId);
+    const room_allotments = await getHisAllotedRoomsByUserId(req.params.userId);
     const currentPage = "history";
     if (room_allotments) {
       res.render("user/room_history", { user, room_allotments, currentPage });
@@ -298,17 +299,51 @@ app.post("/admin/dashboard/addRoom", async (req, res) => {
   }
 });
 
+app.post("/admin/dashboard/delete/:roomId", async (req, res) => {
+  const roomId = req.params.roomId;
+
+  try {
+    // Call a function to delete the room by its ID
+    const check = await deleteRoom(roomId);
+    if(check) {
+      res.redirect("/admin/dashboard");
+
+    } else {
+      console.log("not deteted");
+    }
+    
+  } catch (error) {
+    // If an error occurs during deletion, handle it appropriately
+    console.error("Error deleting room:", error);
+    res.status(500).send("Error deleting room. Please try again later.");
+  }
+});
+
+
 app.get("/room/:roomId/allot", async (req, res) => {
   const room_allotment = await getAllotedRoomsByRoomId(req.params.roomId);
   res.send(room_allotment);
 });
 
+function convertToDatetimeLocal(dateTimeString) {
+  const date = new Date(dateTimeString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
 app.post("/approve/:roomId", async (req, res) => {
   try {
     const { a_id, start_time, end_time, r_id } = req.body;
+    const new_start_time = convertToDatetimeLocal(start_time);
+    const new_end_time = convertToDatetimeLocal(end_time);
     const countOverlapping = await getOverlappingInterval(
-      start_time,
-      end_time,
+      new_start_time,
+      new_end_time,
       r_id
     );
     if (countOverlapping[0].overlapCount == 0) {
