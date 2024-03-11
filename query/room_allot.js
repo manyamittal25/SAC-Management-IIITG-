@@ -26,7 +26,25 @@ async function getAllotedRoomsByRoomId(roomId) {
         console.error("Error fetching room_allotbyRoomId: " + err.stack);
         return reject(err);
       }
-      
+
+      resolve(results);
+    });
+  });
+}
+
+// Function to get alloted rooms by room ID
+async function getAllAllotedRoomsByRoomId(roomId) {
+  return new Promise((resolve, reject) => {
+    const selectQuery = ` SELECT name, s_id, a_id, r_name, start_time, end_time, status 
+            FROM room_allotment NATURAL JOIN rooms NATURAL JOIN students 
+            WHERE r_id = ?
+            `;
+    pool.query(selectQuery, [roomId], (err, results) => {
+      if (err) {
+        console.error("Error fetching room_all_allotbyRoomId: " + err.stack);
+        return reject(err);
+      }
+
       resolve(results);
     });
   });
@@ -44,7 +62,7 @@ async function getAllotedRoomsByUserId(userId) {
         console.error("Error fetching room_allotbyUserId: " + err.stack);
         return reject(err);
       }
-      
+
       resolve(results);
     });
   });
@@ -82,7 +100,7 @@ async function createRoomAllotment(
   description
 ) {
   return new Promise((resolve, reject) => {
-    const insertQuery = `INSERT INTO room_allotment (s_id, r_id, start_time, end_time, description, status) VALUES (?, ?, ?, ?, ?, 'approved')`;
+    const insertQuery = `INSERT INTO room_allotment (s_id, r_id, start_time, end_time, description, status) VALUES (?, ?, ?, ?, ?, 'pending')`;
     pool.query(
       insertQuery,
       [userId, roomId, startTime, endTime, description],
@@ -97,10 +115,28 @@ async function createRoomAllotment(
   });
 }
 
+
+// Function to approve room allotment by ID
+async function approveRoomAllotment(allotmentId) {
+  return new Promise((resolve, reject) => {
+    const updateQuery = `UPDATE room_allotment SET status = 'approved' WHERE a_id = ?`;
+    pool.query(updateQuery, [allotmentId], (err, results) => {
+      if (err) {
+        console.error("Error approving room allotment: " + err.stack);
+        return reject(err);
+      }
+      resolve(results.affectedRows > 0); // Resolve with a boolean indicating whether the update was successful
+    });
+  });
+}
+
 module.exports = {
   getAllAllotedRooms,
   getAllotedRoomsByRoomId,
+  getAllAllotedRoomsByRoomId,
   getAllotedRoomsByUserId,
   getOverlappingInterval,
   createRoomAllotment,
+  approveRoomAllotment, 
 };
+

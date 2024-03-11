@@ -73,6 +73,7 @@ function createDatabaseAndTables() {
   // Define the SQL statement to create the room_allotment table
   const createRoomAllotmentTableQuery = `
     CREATE TABLE IF NOT EXISTS room_allotment (
+      a_id INT AUTO_INCREMENT PRIMARY KEY,
       s_id INT,
       r_id INT,
       start_time DATETIME,

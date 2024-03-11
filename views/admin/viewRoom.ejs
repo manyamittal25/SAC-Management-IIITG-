@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Details</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Room Details</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Room Name</th>
+                <th>Start Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+                <% if (rooms.some(room => room.status === 'pending')) { %>
+                    <th>Action</th>
+                <% } %>
+            </tr>
+        </thead>
+        <tbody>
+            <% rooms.forEach(function(room) { %>
+                <tr>
+                    <td><%= room.name %></td>
+                    <td><%= formatDate(room.start_time) %></td>
+                    <td><%= formatTime(room.start_time) %></td>
+                    <td><%= formatTime(room.end_time) %></td>
+                    <td><%= room.status %></td>
+                    <% if (room.status === 'pending') { %>
+                        <td>
+                            <form action="/approve/<%= roomId %>" method="POST">
+                                <input type="hidden" name="a_id" value="<%= room.a_id %>">
+                                <input type="hidden" name="r_id" value="<%= room.r_id %>">
+                                <input type="hidden" name="start_time" value="<%= room.start_time %>">
+                                <input type="hidden" name="end_time" value="<%= room.end_time %>">
+                                <button type="submit">Approve</button>
+                            </form>                            
+                        </td>
+                    <% } else { %>
+                        <td></td>
+                    <% } %>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+    <%
+    function formatTime(dateTimeString) {
+        const date = new Date(dateTimeString);
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedTime = hours % 12 + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
+        return formattedTime;
+    }
+    function formatDate(dateTimeString) {
+        const date = new Date(dateTimeString);
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+    }
+    %>            
+</body>
+</html>

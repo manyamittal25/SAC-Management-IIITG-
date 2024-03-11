@@ -20,9 +20,11 @@ const { getAllRooms, getRoomById, createRoom } = require("./query/rooms");
 const {
   getAllAllotedRooms,
   getAllotedRoomsByRoomId,
+  getAllAllotedRoomsByRoomId,
   getAllotedRoomsByUserId,
   getOverlappingInterval,
   createRoomAllotment,
+  approveRoomAllotment,
 } = require("./query/room_allot");
 
 const app = express();
@@ -261,37 +263,74 @@ app.post("/admin", (req, res) => {
 });
 
 app.get("/admin/dashboard", requireAuthAdmin, async (req, res) => {
-  if(req.session.adminId == 1) {
+  if (req.session.adminId == 1) {
     const rooms = await getAllRooms();
     res.render("admin/index", { rooms });
   } else {
-    res.redirect('/admin');
+    res.redirect("/admin");
   }
+});
+
+app.get("/admin/dashboard/view/:roomId", async (req, res) => {
+  const roomId = req.params.roomId;
+  const rooms = await getAllAllotedRoomsByRoomId(roomId);
+  console.log(rooms);
+  res.render("admin/viewRoom", { rooms, roomId });
 });
 
 app.get("/admin/dashboard/addRoom", requireAuthAdmin, async (req, res) => {
   res.render("admin/addRoom");
-})
+});
 
 app.post("/admin/dashboard/addRoom", async (req, res) => {
   try {
     // Extracting data from the request body
     const { r_name } = req.body;
-    const newRoom = await createRoom({r_name});
+    const newRoom = await createRoom({ r_name });
 
-    
-    res.redirect("/admin/dashboard")
+    res.redirect("/admin/dashboard");
   } catch (error) {
     // Handle any errors that occur during the process
     console.error("Error adding room:", error);
-    res.status(500).json({ message: "Error adding room", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error adding room", error: error.message });
   }
 });
-
 
 app.get("/room/:roomId/allot", async (req, res) => {
   const room_allotment = await getAllotedRoomsByRoomId(req.params.roomId);
   res.send(room_allotment);
+});
+
+app.post("/approve/:roomId", async (req, res) => {
+  try {
+    const { a_id, start_time, end_time, r_id } = req.body;
+    const countOverlapping = await getOverlappingInterval(
+      start_time,
+      end_time,
+      r_id
+    );
+    if (countOverlapping[0].overlapCount == 0) {
+      const conformBooking = await approveRoomAllotment(
+        a_id
+      );
+      if (conformBooking) {
+        res.redirect(`/admin/dashboard/view/${req.params.roomId}`);
+      } else {
+        res.status(500).send("Failed to approve room allotment.");
+      }
+    } else {
+      res
+        .status(400)
+        .send(
+          "There is an overlapping interval. Room allotment cannot be approved."
+        );
+    }
+  } catch (error) {
+    console.error("Error while approving room allotment: " + error.stack);
+    res.status(500).send("An error occurred while processing your request.");
+  }
 });
 
 const port = process.env.DB_PORT;

@@ -13,13 +13,14 @@
         <thead>
           <th>Room id</th>
           <th>Room name</th>
+          <th>View Room</th>
         </thead>
         <tbody>
           <% rooms.forEach((i)=>{%>
           <tr>
             <td><%=i.r_id%></td>
             <td><%=i.r_name%></td>
-            <td></td>
+            <td><a href="/admin/dashboard/view/<%= i.r_id %>">View</a></td>
           </tr>
           <% });%>
         </tbody>
