@@ -1,18 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin</title>
-</head>
-<body>
-  <h1>Login into Admin portal</h1>
-  <form action="/admin" method="post">
-    <label for="admin_name"> Name:</label>
-    <input type="text" id="admin_name" name="admin_name" required>
-    <label for="admin_password">Password:</label>
-    <input type="password" id="admin-password" name="admin_password" required>
-    <button type="submit">Submit</button>
-  </form>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin</title>
+    <style>
+      /* Reset some default styles */
+      body,
+      h1,
+      form,
+      input,
+      label,
+      button {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #333;
+      }
+
+      form {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: #555;
+      }
+
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+      }
+
+      button[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 0.8rem 1.2rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+
+      /* Reset some default styles */
+      body,
+      h1,
+      form,
+      input,
+      label,
+      button {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        animation: gradient 10s ease infinite;
+      }
+
+      @keyframes gradient {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #fff;
+      }
+
+      form {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+        width: 100%;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: #555;
+      }
+
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      input[type="text"]:focus,
+      input[type="password"]:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+
+      button[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 0.8rem 1.2rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/admin" method="post">
+      <h1>Login into Admin portal</h1>
+
+      <label for="admin_name"> Name:</label>
+      <input type="text" id="admin_name" name="admin_name" required />
+      <label for="admin_password">Password:</label>
+      <input
+        type="password"
+        id="admin-password"
+        name="admin_password"
+        required
+      />
+      <button type="submit">Submit</button>
+    </form>
+  </body>
 </html>
