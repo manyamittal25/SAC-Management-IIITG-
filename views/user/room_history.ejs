@@ -3,7 +3,9 @@
 <div class="app-content">
     <%- include('./partials/sidebar.ejs') %>
     <div class="projects-section">
-        <h1>All Alloted Rooms by <%= user.name %></h1>
+        <div class="projects-section-header">
+            <h1>All Alloted Rooms by <%= user.name %></h1>
+        </div>
         <div class="container wrapper">
             <table class="table table-bordered table-hover" cellspacing="0" width="100%">
                 <thead>
@@ -52,9 +54,8 @@
 <script src="/user/javascript/room_view.js"></script>
 
 
+<!-- partial -->
+<script src="/user/javascript/index.js"></script>
 </body>
-</html>
 
-<script>
- 
-</script>
+</html>

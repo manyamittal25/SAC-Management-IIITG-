@@ -5,17 +5,24 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const path = require("path");
 const moment = require("moment");
+const { parse } = require("date-fns");
 
 const {
   getAllStudents,
   getStudentById,
+  getUserByEmail,
   getStudentByEmailPass,
   createStudent,
   updateStudent,
   deleteStudent,
 } = require("./query/students");
 
-const { getAllRooms, getRoomById, createRoom, deleteRoom } = require("./query/rooms");
+const {
+  getAllRooms,
+  getRoomById,
+  createRoom,
+  deleteRoom,
+} = require("./query/rooms");
 
 const {
   getAllAllotedRooms,
@@ -25,8 +32,10 @@ const {
   getOverlappingInterval,
   createRoomAllotment,
   approveRoomAllotment,
-  getHisAllotedRoomsByUserId
+  getHisAllotedRoomsByUserId,
 } = require("./query/room_allot");
+
+const { insertBadmintonCourtAllotment } = require("./query/court");
 
 const app = express();
 
@@ -37,12 +46,15 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public"))); // Serve static files from the 'public' directory
-// Set up session middleware
 app.use(
   session({
-    secret: "secret", // Change this to a secure random string in production
+    secret: "secret", 
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+      // Other cookie options such as secure, httpOnly, etc. can also be set here
+    }
   })
 );
 
@@ -204,13 +216,18 @@ app.post(
     try {
       const { start_time, end_time, description } = req.body;
 
+      // Validate end_time greater than start_time
+      if (new Date(end_time) <= new Date(start_time)) {
+        return res.status(400).json({ error: "End time must be greater than start time" });
+      }
+      
       // Check for overlapping intervals
       const countOverlapping = await getOverlappingInterval(
         start_time,
         end_time,
         req.params.roomId
       );
-      console.log(start_time);
+      
       // If there are no overlapping intervals, create the room allotment
       if (countOverlapping[0].overlapCount == 0) {
         await createRoomAllotment(
@@ -232,7 +249,6 @@ app.post(
     }
   }
 );
-
 app.get("/user/:userId/history", async (req, res) => {
   try {
     const user = await getStudentById(req.params.userId);
@@ -246,6 +262,85 @@ app.get("/user/:userId/history", async (req, res) => {
   } catch (error) {
     console.error("Error rendering history view:", error);
     res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/user/:userId/bookcourt", async (req, res) => {
+  const user = await getStudentById(req.params.userId);
+  const currentPage = "bookCourt";
+  res.render("user/bookCourt", { user, currentPage });
+});
+
+app.post("/user/:userId/bookcourt", async (req, res) => {
+  try {
+    const inputDate = req.body.date;
+    const inputTime = req.body.time;
+
+    const { court_id, email1, email2, email3, email4 } = req.body;
+
+    const [startTimeString, endTimeString] = inputTime.split("-");
+
+    const startDateTimeString = `${inputDate} ${startTimeString}`;
+    const endDateTimeString = `${inputDate} ${endTimeString}`;
+
+    const startTime = parse(
+      startDateTimeString,
+      "yyyy-MM-dd HH:mm",
+      new Date()
+    );
+    const endTime = parse(endDateTimeString, "yyyy-MM-dd HH:mm", new Date());
+
+    const player1Id = await getUserByEmail(email1);
+    const player2Id = await getUserByEmail(email2);
+    const player3Id = await getUserByEmail(email3);
+    const player4Id = await getUserByEmail(email4);
+    if (player1Id && player2Id && player3Id && player4Id) {
+      const bookBadmintonCourt = await insertBadmintonCourtAllotment(
+        court_id,
+        player1Id.s_id,
+        player2Id.s_id,
+        player3Id.s_id,
+        player4Id.s_id,
+        startTime,
+        endTime
+      );
+      res.redirect(`/user/${req.params.userId}`);
+    } else {
+      res.redirect(`/user/${req.params.userId}/bookcourt`);
+    }
+  } catch (error) {
+      console.error("Error booking badminton court:", error);
+      res.status(500).send("An error occurred while booking the badminton court: " + error.message);
+    }
+});
+
+app.get("/user/:userId/setting", async(req, res) => {
+  const user = await getStudentById(req.params.userId);
+  const currentPage = "setting"
+  res.render("user/setting", {user, currentPage});
+})
+
+app.post("/user/:userId/edit", async(req, res) => {
+  await updateStudent(req.params.userId, req.body);
+  res.redirect(`/user/${req.params.userId}/setting`)
+})
+
+app.post("/user/:userId/logout", requireAuth, async (req, res) => {
+  const userId = req.params.userId;
+
+  if (userId == req.session.userId) {
+    try {
+      // Clear the user's session or authentication token
+      req.session.destroy();
+
+      // Optionally, you can redirect the user to the login page
+      return res.redirect('/login');
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Internal Server Error");
+    }
+  } else {
+    res.redirect("/login");
   }
 });
 
@@ -305,20 +400,17 @@ app.post("/admin/dashboard/delete/:roomId", async (req, res) => {
   try {
     // Call a function to delete the room by its ID
     const check = await deleteRoom(roomId);
-    if(check) {
+    if (check) {
       res.redirect("/admin/dashboard");
-
     } else {
       console.log("not deteted");
     }
-    
   } catch (error) {
     // If an error occurs during deletion, handle it appropriately
     console.error("Error deleting room:", error);
     res.status(500).send("Error deleting room. Please try again later.");
   }
 });
-
 
 app.get("/room/:roomId/allot", async (req, res) => {
   const room_allotment = await getAllotedRoomsByRoomId(req.params.roomId);
@@ -347,9 +439,7 @@ app.post("/approve/:roomId", async (req, res) => {
       r_id
     );
     if (countOverlapping[0].overlapCount == 0) {
-      const conformBooking = await approveRoomAllotment(
-        a_id
-      );
+      const conformBooking = await approveRoomAllotment(a_id);
       if (conformBooking) {
         res.redirect(`/admin/dashboard/view/${req.params.roomId}`);
       } else {

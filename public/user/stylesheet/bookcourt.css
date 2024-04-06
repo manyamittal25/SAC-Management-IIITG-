@@ -9,7 +9,7 @@
   width: 32px;
 }
 
-.room-allot-section {
+.badminton-allot-section {
    display: flex; 
    justify-content: center;
     padding-top: 10%;  
@@ -30,20 +30,20 @@
     background-position: 0% 50%;
   }
 }
-.room-allot-box {
+.badminton-allot-box {
   position: relative;
 }
-.room-allot-box .room-allot-square {
+.badminton-allot-box .badminton-allot-square {
   position: absolute;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(5px);
   box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 15px;
-  animation: room-allot-square 10s linear infinite;
+  animation: badminton-allot-square 10s linear infinite;
   animation-delay: calc(-1s * var(--i));
 }
-@keyframes room-allot-square {
+@keyframes badminton-allot-square {
   0%,
   100% {
     transform: translateY(-20px);
@@ -52,39 +52,39 @@
     transform: translateY(20px);
   }
 }
-.room-allot-box .room-allot-square:nth-child(1) {
+.badminton-allot-box .badminton-allot-square:nth-child(1) {
   width: 100px;
   height: 100px;
   top: -15px;
   right: -45px;
 }
-.room-allot-box .room-allot-square:nth-child(2) {
+.badminton-allot-box .badminton-allot-square:nth-child(2) {
   width: 150px;
   height: 150px;
   top: 105px;
   left: -125px;
   z-index: 2;
 }
-.room-allot-box .room-allot-square:nth-child(3) {
+.badminton-allot-box .badminton-allot-square:nth-child(3) {
   width: 60px;
   height: 60px;
   bottom: 85px;
   right: -45px;
   z-index: 2;
 }
-.room-allot-box .room-allot-square:nth-child(4) {
+.badminton-allot-box .badminton-allot-square:nth-child(4) {
   width: 50px;
   height: 50px;
   bottom: 35px;
   left: -95px;
 }
-.room-allot-box .room-allot-square:nth-child(5) {
+.badminton-allot-box .badminton-allot-square:nth-child(5) {
   width: 50px;
   height: 50px;
   top: -15px;
   left: -25px;
 }
-.room-allot-box .room-allot-square:nth-child(6) {
+.badminton-allot-box .badminton-allot-square:nth-child(6) {
   width: 100px;
   height: 100px;
   top: 165px;
@@ -92,7 +92,7 @@
   z-index: 2;
 }
 
-.room-allot-container {
+.badminton-allot-container {
   position: relative;
   padding: 50px;
   width: 260px;
@@ -106,7 +106,7 @@
   box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
 }
 
-.room-allot-container::after {
+.badminton-allot-container::after {
   content: "";
   position: absolute;
   top: 5px;
@@ -122,22 +122,22 @@
   );
 }
 
-.room-allot-form {
+.badminton-allot-form {
   position: relative;
   width: 100%;
   height: 100%;
 }
-.room-allot-form h2 {
+.badminton-allot-form h2 {
   color: #fff;
   letter-spacing: 2px;
   margin-bottom: 30px;
 }
-.room-allot-form .inputBx {
+.badminton-allot-form .inputBx {
   position: relative;
   width: 120%;
   margin-bottom: 20px;
 }
-.room-allot-form .inputBx input {
+.badminton-allot-form .inputBx input {
   width: 80%;
   outline: none;
   border: none;
@@ -148,9 +148,9 @@
   border-radius: 15px;
   color: #fff;
   font-size: 16px;
-  room-allot-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  badminton-allot-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
-.room-allot-form .inputBx .password-control {
+.badminton-allot-form .inputBx .password-control {
   position: absolute;
   top: 11px;
   right: 10px;
@@ -160,26 +160,26 @@
   background: url(https://snipp.ru/demo/495/view.svg) 0 0 no-repeat;
   transition: 0.5s;
 }
-.room-allot-form .inputBx .view {
+.badminton-allot-form .inputBx .view {
   background: url(https://snipp.ru/demo/495/no-view.svg) 0 0 no-repeat;
   transition: 0.5s;
 }
-.room-allot-form .inputBx .fas {
+.badminton-allot-form .inputBx .fas {
   position: absolute;
   top: 13px;
   left: 13px;
 }
-.room-allot-form .inputBx input[type="submit"] {
+.badminton-allot-form .inputBx input[type="submit"] {
   background: #fff;
   color: #111;
   max-width: 100px;
   padding: 8px 10px;
-  room-allot-box-shadow: none;
+  badminton-allot-box-shadow: none;
   letter-spacing: 1px;
   cursor: pointer;
   transition: 1.5s;
 }
-.room-allot-form .inputBx input[type="submit"]:hover {
+.badminton-allot-form .inputBx input[type="submit"]:hover {
   background: linear-gradient(
     115deg,
     rgba(0, 0, 0, 0.1),
@@ -188,10 +188,10 @@
   color: #fff;
   transition: 0.5s;
 }
-.room-allot-form .inputBx input::placeholder {
+.badminton-allot-form .inputBx input::placeholder {
   color: #fff;
 }
-.room-allot-form .inputBx span {
+.badminton-allot-form .inputBx span {
   position: absolute;
   left: 30px;
   padding: 10px;
@@ -200,20 +200,20 @@
   transition: 0.5s;
   pointer-events: none;
 }
-.room-allot-form .inputBx input:focus ~ span,
-.room-allot-form .inputBx input:valid ~ span {
+.badminton-allot-form .inputBx input:focus ~ span,
+.badminton-allot-form .inputBx input:valid ~ span {
   transform: translateX(-30px) translateY(-25px);
   font-size: 12px;
 }
-.room-allot-form p {
+.badminton-allot-form p {
   color: #fff;
   font-size: 15px;
   margin-top: 5px;
 }
-.room-allot-form p a {
+.badminton-allot-form p a {
   color: #fff;
 }
-.room-allot-form p a:hover {
+.badminton-allot-form p a:hover {
   background-color: #000;
   background-image: linear-gradient(to right, #434343 0%, black 100%);
   -webkit-background-clip: text;
@@ -229,26 +229,52 @@
 }
 
 /* Hide the default suggestion for year, month, and day fields */
-input[type="datetime-local"]:in-range::-webkit-datetime-edit-year-field,
-input[type="datetime-local"]:in-range::-webkit-datetime-edit-month-field,
-input[type="datetime-local"]:in-range::-webkit-datetime-edit-day-field,
-input[type="datetime-local"]:in-range::-webkit-datetime-edit-hour-field,
-input[type="datetime-local"]:in-range::-webkit-datetime-edit-minute-field,
-input[type="datetime-local"]:in-range::-webkit-datetime-edit-text {
+input[type="date"]::-webkit-datetime-edit-year-field,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-text {
   color: transparent;
 }
 
-.room-allot-container {
+/* Apply the same style to option elements */
+select#time option {
+  color: #000000; /* Adjust text color */
+  background-color: rgba(255, 255, 255, 0.2); /* Adjust background color */
+}
+
+/* Style the select menu */
+select#time {
+  background-color: rgba(255, 255, 255, 0.2); /* Adjust background color */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Adjust border color */
+  border-radius: 15px; /* Adjust border radius */
+  padding: 8px 10px; /* Adjust padding */
+  color: #fff; /* Adjust text color */
+  font-size: 16px; /* Adjust font size */
+  width: 80%; /* Adjust width */
+}
+
+select#court_id option {
+  color: #000000; /* Adjust text color */
+  background-color: rgba(255, 255, 255, 0.2); /* Adjust background color */
+}
+
+/* Style the select menu */
+select#court_id {
+  background-color: rgba(255, 255, 255, 0.2); /* Adjust background color */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Adjust border color */
+  border-radius: 15px; /* Adjust border radius */
+  padding: 8px 10px; /* Adjust padding */
+  color: #fff; /* Adjust text color */
+  font-size: 16px; /* Adjust font size */
+  width: 80%; /* Adjust width */
+}
+
+.badminton-allot-container {
     width: 120%; 
     height: 80%;
 }
 
-.room-allot-section {
+.badminton-allot-section {
     border-radius: 10px;
-    padding-bottom: 10%;
-}
-
-/* Dark mode styles */
-.dark-mode .dark-text {
-  color: white;
+    padding-top: 5%;
 }

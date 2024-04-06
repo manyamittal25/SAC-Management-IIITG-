@@ -32,6 +32,24 @@ async function getStudentById(studentId) {
   });
 }
 
+// Function to get a student by ID
+async function getUserByEmail(email) {
+  return new Promise((resolve, reject) => {
+    const selectQuery = `SELECT s_id FROM students WHERE email = ?`;
+    pool.query(selectQuery, [email], (err, results) => {
+      if (err) {
+        console.error("Error fetching student: " + err.stack);
+        return reject(err);
+      }
+      if (results.length === 0) {
+        console.error("Student not found");
+        return reject(new Error("Student not found"));
+      }
+      resolve(results[0]);
+    });
+  });
+}
+
 // Function to get a student by Email and Password
 async function getStudentByEmailPass(email, password) {
   return new Promise((resolve, reject) => {
@@ -113,6 +131,7 @@ module.exports = {
   getAllStudents,
   getStudentById,
   getStudentByEmailPass,
+  getUserByEmail,
   createStudent,
   updateStudent,
   deleteStudent,

@@ -1,0 +1,136 @@
+<%- include('./partials/header.ejs') %>
+
+<div class="app-content">
+    <%- include('./partials/sidebar.ejs') %>
+    <div class="projects-section">
+        <div class="projects-section-header">
+            <h1>Settings</h1>
+        </div>
+        <style>
+            /* General Styles */
+            
+            
+            .app-content {
+                display: flex;
+                min-height: 100vh;
+            }
+            
+            .projects-section {
+                flex: 1;
+                padding: 2rem;
+            }
+            
+            /* Headings */
+            h1, h2 {
+                font-weight: 500;
+                margin-bottom: 1.5rem;
+            }
+            
+            /* Card Styles */
+            .card {
+                background-color: #fee4cb;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+            
+            /* Form Styles */
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+            
+            label {
+                display: block;
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+            
+            input[type="text"],
+            input[type="email"],
+            input[type="roll"],
+            input[type="password"] {
+                width: 100%;
+                padding: 0.8rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                transition: border-color 0.3s ease-in-out;
+            }
+            
+            input[type="text"]:focus,
+            input[type="email"]:focus,
+            input[type="roll"]:focus,
+            input[type="password"]:focus {
+                outline: none;
+                border-color: #4285f4;
+            }
+            
+            button[type="submit"] {
+                background-color: #4285f4;
+                color: #fff;
+                padding: 0.8rem 1.6rem;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease-in-out;
+            }
+            
+            button[type="submit"]:hover {
+                background-color: #2a6dcc;
+            }
+            
+            /* Responsive Styles */
+            @media (max-width: 768px) {
+                .app-content {
+                flex-direction: column;
+                }
+            
+                .projects-section {
+                padding: 1rem;
+                }
+            
+                .card {
+                padding: 1.5rem;
+                }
+            }
+        </style>
+        <div class="settings-container">
+            <div class="card">
+              <h2>Edit Profile</h2>
+              <form action="/user/<%= user.s_id %>/edit" method="post">
+                <div class="form-group">
+                  <label for="name">Full name</label>
+                  <input type="text" id="name" name="name" value="<%= user.name %>" required>
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" value="<%= user.email %>" required>
+                </div>
+                <div class="form-group">
+                  <label for="roll">Roll</label>
+                  <input type="roll" id="roll" name="roll" value="<%= user.roll %>" required>
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" id="password" name="password" value="<%= user.password %>" required>
+                </div>
+                <div class="form-group">
+                  <button type="submit">Update Profile</button>
+                </div>
+              </form>
+            </div>
+            
+            <div class="card">
+              <h2>Account</h2>
+              <form action="/user/<%= user.s_id %>/logout" method="POST">
+                <button type="submit">Logout</button>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- partial -->
+<script src="/user/javascript/index.js"></script>
+
+</body>
+</html>

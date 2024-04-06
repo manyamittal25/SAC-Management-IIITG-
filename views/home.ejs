@@ -3,10 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>SAC Management - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* Your CSS styles go here */
+
+        /* Import Google Font */
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navbar Styles */
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 80px 0;
+        }
+
+        section h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 36px;
+        }
+
+        /* About Section */
+        #about p {
+            text-align: justify;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        #about p.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Service Section */
+        .service {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .service i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Team Section */
+        .team-member {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .team-member img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .team-member img.animate {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Contact Section */
+        #contact form {
+            display: flex;
+            flex-direction: column;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        #contact input,
+        #contact textarea {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #contact button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #contact button:hover {
+            background-color: #555;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        footer .social-icons a {
+            color: #fff;
+            font-size: 24px;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        footer .social-icons a:hover {
+            color: #ccc;
+        }
+
+        /* Animation Styles */
+        .animate {
+            opacity: 1;
+            transform: translateX(0) translateY(0);
+        }
+    </style>
 </head>
 <body>
-    <%- include('./partials/navbar.ejs') %> <!-- Include the navbar -->
-    <h1>Welcome to our website!</h1>
+    <header>
+        <nav>
+            <!-- Your navbar content goes here -->
+            <%- include('./partials/navbar.ejs') %>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <div class="container">
+            <h1>Welcome to SAC Management</h1>
+            <p>
+                We provide innovative solutions to manage your Student Activity Center efficiently.
+            </p>
+            <a href="#" class="btn">Learn More</a>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <h2>About SAC Management</h2>
+            <p>
+                SAC Management offers comprehensive tools and services to help student activity centers streamline their operations and enhance member experiences. Our platform provides features such as event management, facility booking, membership management, and more.
+            </p>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="container">
+            <h2>Our Services</h2>
+            <div class="service">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Event Management</h3>
+                <p>
+                    Manage and promote events efficiently with our intuitive event management system.
+                </p>
+            </div>
+            <div class="service">
+                <i class="fas fa-book"></i>
+                <h3>Facility Booking</h3>
+                <p>
+                    Easily book and manage facility reservations for various activities and events.
+                </p>
+            </div>
+            <div class="service">
+                <i class="fas fa-users"></i>
+                <h3>Membership Management</h3>
+                <p>
+                    Streamline membership registration, renewals, and communication with our membership management tools.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="team">
+        <div class="container">
+            <h2>Our Team</h2>
+            <div class="team-member">
+                <img src="team-member1.jpg" alt="John Doe" />
+                <h3>Pallav Kumar</h3>
+                <p>Team Member</p>
+            </div>
+            <div class="team-member">
+                <img src="team-member2.jpg" alt="Jane Smith" />
+                <h3>Nandini Modi</h3>
+                <p>Team Member</p>
+            </div>
+            <div class="team-member">
+                <img src="team-member2.jpg" alt="Jane Smith" />
+                <h3>Manya Mittal</h3>
+                <p>Team Member</p>
+            </div>
+            <div class="team-member">
+                <img src="team-member2.jpg" alt="Jane Smith" />
+                <h3>Prakriti Rani</h3>
+                <p>Team Member</p>
+            </div>
+            <!-- Add more team members as needed -->
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <form>
+                <input type="text" placeholder="Your Name" />
+                <input type="email" placeholder="Your Email" />
+                <textarea placeholder="Your Message"></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 SAC Management. All rights reserved.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Add animation on scroll
+        window.addEventListener("scroll", animateOnScroll);
+
+        function animateOnScroll() {
+            const aboutText = document.querySelector("#about p");
+            const teamImages = document.querySelectorAll(".team-member img");
+            const scrollPosition = window.scrollY + window.innerHeight;
+
+            // Animate about section text
+            const aboutTextPosition =
+                aboutText.getBoundingClientRect().top + window.scrollY;
+            if (scrollPosition > aboutTextPosition) {
+                aboutText.classList.add("animate");
+            }
+
+            // Animate team member images
+            teamImages.forEach((img) => {
+                const imgPosition = img.getBoundingClientRect().top + window.scrollY;
+                if (scrollPosition > imgPosition) {
+                    img.classList.add("animate");
+                }
+            });
+        }
+
+        animateOnScroll(); // Trigger animation on page load
+    </script>
 </body>
 </html>

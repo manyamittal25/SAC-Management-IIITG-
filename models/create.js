@@ -92,6 +92,46 @@ function createDatabaseAndTables() {
     "Error creating room allotment table"
   );
 
+  const createBadmintonCourts = `
+    CREATE TABLE IF NOT EXISTS badminton_courts (
+      court_id INT AUTO_INCREMENT PRIMARY KEY,
+      court_name VARCHAR(100) NOT NULL,
+      court_status ENUM('Available', 'Occupied') DEFAULT 'Available'
+    )
+  `;
+
+  // Execute query for creating badminton courts table
+  executeQuery(
+    createBadmintonCourts,
+    "Badminton courts table created successfully",
+    "Error creating badminton courts table"
+  );
+
+  const createBadmintonCourtAllotment = `
+    CREATE TABLE IF NOT EXISTS badminton_court_allotment (
+      c_id INT AUTO_INCREMENT PRIMARY KEY,
+      court_id INT,
+      player1_id INT,
+      player2_id INT,
+      player3_id INT,
+      player4_id INT,
+      start_time DATETIME,
+      end_time DATETIME,
+      CONSTRAINT fk_court_id FOREIGN KEY (court_id) REFERENCES badminton_courts(court_id),
+      CONSTRAINT fk_player1_id FOREIGN KEY (player1_id) REFERENCES students(s_id),
+      CONSTRAINT fk_player2_id FOREIGN KEY (player2_id) REFERENCES students(s_id),
+      CONSTRAINT fk_player3_id FOREIGN KEY (player3_id) REFERENCES students(s_id),
+      CONSTRAINT fk_player4_id FOREIGN KEY (player4_id) REFERENCES students(s_id)
+    )
+  `;
+
+  // Execute query for creating badminton court allotment table
+  executeQuery(
+    createBadmintonCourtAllotment,
+    "Badminton court allotment table created successfully",
+    "Error creating badminton court allotment table"
+  );
+
   // Close the connection
   connection.end((err) => {
     if (err) {

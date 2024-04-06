@@ -3,7 +3,7 @@
 <div class="app-content">
     <%- include('./partials/sidebar.ejs') %>
     <div class="projects-section">
-        <section class=" room-allot-section">
+        <section class="room-allot-section">
             <div class="room-allot-box">
               
               <div class="room-allot-square" style="--i:0;"></div>
@@ -15,7 +15,7 @@
               
              <div class="room-allot-container"> 
               <div class="room-allot-form"> 
-                <h2>Allot <%=room.r_name%></h2>
+                <h2 class="dark-text">Allot <%=room.r_name%></h2>
                 <form action="/user/<%= user.s_id%>/room/<%=room.r_id%>/allot" method="post">
                   <div class="inputBx">
                     <input type="datetime-local" id="start-time" name="start_time" required="required" >
@@ -48,6 +48,6 @@
 </div>
 <!-- partial -->
 <script src="/user/javascript/index.js"></script>
-
 </body>
+
 </html>

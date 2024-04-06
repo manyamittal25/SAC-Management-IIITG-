@@ -1,0 +1,87 @@
+<%- include('./partials/header.ejs') %>
+
+<div class="app-content">
+    <%- include('./partials/sidebar.ejs') %>
+    <div class="projects-section">
+        <section class="badminton-allot-section">
+            <div class="badminton-allot-box">
+              
+              <div class="badminton-allot-square" style="--i:0;"></div>
+              <div class="badminton-allot-square" style="--i:1;"></div>
+              <div class="badminton-allot-square" style="--i:2;"></div>
+              <div class="badminton-allot-square" style="--i:3;"></div>
+              <div class="badminton-allot-square" style="--i:4;"></div>
+              <div class="badminton-allot-square" style="--i:5;"></div>
+              
+             <div class="badminton-allot-container"> 
+              <div class="badminton-allot-form"> 
+                <h2>Allot Badminton Court</h2>
+                <form action="/user/<%= user.s_id %>/bookcourt/" method="post">
+
+                    <div class="inputBx">
+                        <input type="date" id="date" name="date" required="required" >
+                        <span for="date">Date</span>
+                        <i class="fas fa-clock"></i>
+                    </div>
+                
+                    <div class="inputBx">
+                        <select id="time" name="time" required>
+                            <option value="">Select Time Slot</option>
+                            <option value="8:00-10:00">8:00 AM - 10:00 AM</option>
+                            <option value="10:00-12:00">10:00 AM - 12:00 PM</option>
+                            <option value="12:00-14:00">12:00 PM - 2:00 PM</option>
+                            <option value="14:00-16:00">2:00 PM - 4:00 PM</option>
+                            <option value="16:00-18:00">4:00 PM - 6:00 PM</option>
+                            <option value="18:00-20:00">6:00 PM - 8:00 PM</option>
+                        </select>
+                    </div>
+
+                    <div class="inputBx">
+                        <select id="court_id" name="court_id" required>
+                            <option value="">Select Court</option>
+                            <option value="1">Court 1</option>
+                            <option value="2">Court 2</option>
+                        </select>
+                    </div>
+                
+                    <div class="inputBx ">
+                        <input type="email" id="email1" name="email1" required="required" >
+                        <span for="email1">Player 1 Eamil</span>
+                        <i class="fas fa-email"></i>
+                    </div>
+                
+                    <div class="inputBx ">
+                        <input type="email" id="email2" name="email2" required="required" >
+                        <span for="email1">Player 2 Eamil</span>
+                        <i class="fas fa-email"></i>
+                    </div>
+                
+                    <div class="inputBx ">
+                        <input type="email" id="email3" name="email3" required="required" >
+                        <span for="email1">Player 3 Eamil</span>
+                        <i class="fas fa-email"></i>
+                    </div>
+                
+                    <div class="inputBx ">
+                        <input type="email" id="email4" name="email4" required="required" >
+                        <span for="email1">Player 4 Eamil</span>
+                        <i class="fas fa-email"></i>
+                    </div>
+
+                    <div class="inputBx">
+                        <input type="submit" value="Book Now"> 
+                    </div>
+                </form>
+                
+                <p><a href="/user/<%= user.s_id %>">Back</a></p>
+              </div>
+            </div>
+              
+        </section>
+    </div>
+</div>
+<!-- partial -->
+<script src="/user/javascript/index.js"></script>
+
+</body>
+</html>
