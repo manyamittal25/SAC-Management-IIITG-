@@ -12,6 +12,7 @@ const {
   getStudentById,
   getUserByEmail,
   getStudentByEmailPass,
+  getStudentByEmailRollPass,
   createStudent,
   updateStudent,
   deleteStudent,
@@ -141,7 +142,8 @@ app.get("/signUp", (req, res) => {
 app.post("/signUp", async (req, res) => {
   const { name, roll, email, password } = req.body;
   try {
-    const existingUser = await getStudentByEmailPass(email, roll, password);
+    const existingUser = await getStudentByEmailRollPass(email, roll);
+    console.log(existingUser);
     if (existingUser) {
       return res.render("user/login", { error: "User already exists" });
     }

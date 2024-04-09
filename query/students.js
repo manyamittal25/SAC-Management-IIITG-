@@ -68,6 +68,24 @@ async function getStudentByEmailPass(email, password) {
   });
 }
 
+// Function to get a student by Email and Password
+async function getStudentByEmailRollPass(email, password, roll) {
+  return new Promise((resolve, reject) => {
+    const selectQuery = `SELECT * FROM students WHERE email = ? AND roll = ?`;
+    pool.query(selectQuery, [email, password, roll], (err, results) => {
+      if (err) {
+        console.error("Error fetching student: " + err.stack);
+        return reject(err);
+      }
+      if (results.length === 0) {
+        console.error("Student not found");
+        return resolve(null); // Return null when no student is found
+      }
+      resolve(results[0]);
+    });
+  });
+}
+
 // Function to create a student
 async function createStudent(studentData) {
   return new Promise((resolve, reject) => {
@@ -131,6 +149,7 @@ module.exports = {
   getAllStudents,
   getStudentById,
   getStudentByEmailPass,
+  getStudentByEmailRollPass,
   getUserByEmail,
   createStudent,
   updateStudent,
