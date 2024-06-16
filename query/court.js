@@ -13,6 +13,8 @@ async function checkOverlap(courtId, startTime, endTime) {
                 OR (start_time >= ? AND end_time <= ?)
             )
         `;
+    
+
         const values = [courtId, endTime, endTime, startTime, startTime, startTime, endTime];
 
         pool.query(selectQuery, values, (err, results) => {
